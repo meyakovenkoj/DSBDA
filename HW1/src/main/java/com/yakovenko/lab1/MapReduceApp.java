@@ -10,16 +10,18 @@ import org.apache.hadoop.mapreduce.Counter;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
-// import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
+ import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
+
+import java.util.Objects;
 
 
 public class MapReduceApp extends Configured implements Tool
 {
     private static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(MapReduceApp.class);
-    
+    private boolean debug = false;
     public static void main( String[] args ) throws Exception
     {
         int exitCode = ToolRunner.run(new MapReduceApp(), args);
@@ -27,7 +29,9 @@ public class MapReduceApp extends Configured implements Tool
     }
 
     public int run(String[] args) throws Exception {
-        if (args.length != 4) {
+        if (args.length == 5 && Objects.equals(args[4], "--debug")) {
+            debug = true;
+        } else if (args.length != 4) {
             throw new RuntimeException("You should specify input, output, sectors dict and temp dict");
         }
 
@@ -38,11 +42,14 @@ public class MapReduceApp extends Configured implements Tool
         job.setReducerClass(LabReducer.class);
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(IntWritable.class);
-        // job.setOutputFormatClass(TextOutputFormat.class);
-        job.setOutputFormatClass(SequenceFileOutputFormat.class);
-        FileOutputFormat.setCompressOutput(job, true);
-        FileOutputFormat.setOutputCompressorClass(job, SnappyCodec.class);
-        SequenceFileOutputFormat.setOutputCompressionType(job, CompressionType.BLOCK);
+        if (debug) {
+            job.setOutputFormatClass(TextOutputFormat.class);
+        } else {
+            job.setOutputFormatClass(SequenceFileOutputFormat.class);
+            FileOutputFormat.setCompressOutput(job, true);
+            FileOutputFormat.setOutputCompressorClass(job, SnappyCodec.class);
+            SequenceFileOutputFormat.setOutputCompressionType(job, CompressionType.BLOCK);
+        }
 
         // add coordinates - sectors dictionary
         job.addCacheFile(new Path(args[2]).toUri());
