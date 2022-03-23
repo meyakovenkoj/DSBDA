@@ -23,4 +23,39 @@ jobs:
         distribution: 'temurin'
         cache: maven
     - name: Build with Maven
-      run: cd HW1 && if [ -e pom.xml ]; then mvn -B package --file pom.xml; fi
+      working-directory: ./HW1
+      run: if [ -e pom.xml ]; then mvn -B package --file pom.xml; fi
+    
+    - name: Setup Python
+      uses: actions/setup-python@v3.0.0
+      with:
+        python-version: 3.9
+        cache: pip
+        architecture: x64
+        cache-dependency-path: HW1/requirements.txt
+    
+    - name: Generate data
+      working-directory: ./HW1
+      run: python generator.py -s 100K -real
+    
+    - name: Execute jar
+      working-directory: ./HW1
+      run: java -cp target/lab1-1.0-SNAPSHOT.jar com.yakovenko.lab1.MapReduceApp input output SECTORS TEMPERATURE
+      
+    - name: Plot
+      working-directory: ./HW1
+      run: python plot.py -c
+      
+    - name: Update plot
+      working-directory: ./HW1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add HW1/output.png
+        git commit -m "Update plot" HW1/output.png || echo "No changes to commit"
+    - name: Push changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
