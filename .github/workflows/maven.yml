@@ -58,8 +58,8 @@ jobs:
       run: |
         git config --local user.email "action@github.com"
         git config --local user.name "GitHub Action"
-        git add HW1/output.png
-        git commit -m "Update plot" HW1/output.png || echo "No changes to commit"
+        git add output.png
+        git commit -m "Update plot" output.png || echo "No changes to commit"
     - name: Push changes
       uses: ad-m/github-push-action@master
       with:
