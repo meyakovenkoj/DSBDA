@@ -51,7 +51,8 @@ def check_consts(size):
 if __name__ == "__main__":
     args = parser.parse_args()
     size = check_consts(args.s)
-    input_path = os.path.join(os.getcwd(), "input")
+    current_pwd = os.getcwd()
+    input_path = os.path.join(current_pwd, "input")
     if os.path.exists(input_path):
         yes = str(input("./input exists. delete it? [y/n]"))
         if yes == "y":
@@ -67,4 +68,17 @@ if __name__ == "__main__":
         size = args.c
     generate(size, anchor_points_x,
              anchor_points_y, args.users, args.x, args.y)
+    os.chdir(current_pwd)
+    with open('SECTORS', 'w') as fd:
+        counter_x = 0
+        counter_y = 0
+        for i in range(args.y):
+            counter_x = 0
+            for j in range(args.x):
+                if j % 100 == 0 and i % 100 == 0:
+                    print("{},{}=SECTOR{}-{}".format(j, i, counter_x, counter_y), file=fd)
+                if j % 100 == 0:
+                    counter_x += 1
+            if i % 100 == 0:
+                counter_y += 1
     print("done")
