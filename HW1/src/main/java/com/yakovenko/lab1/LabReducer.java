@@ -1,15 +1,16 @@
 package com.yakovenko.lab1;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.net.URI;
+import java.util.Map;
+import java.util.TreeMap;
+
+import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
-import org.apache.hadoop.fs.Path;
-import java.io.IOException;
-import java.util.Map;
-import java.util.TreeMap;
-import org.apache.hadoop.filecache.DistributedCache;
-import java.io.BufferedReader;
-import java.io.FileReader;
 
 public class LabReducer extends Reducer<Text, IntWritable, Text, Text> {
     private TreeMap<Integer, String> temperatureMap = new TreeMap<Integer, String>();
@@ -17,9 +18,10 @@ public class LabReducer extends Reducer<Text, IntWritable, Text, Text> {
     @Override
     protected void setup(Context context) throws IOException, InterruptedException {
         try{
-            Path[] cacheFiles = DistributedCache.getLocalCacheFiles(context.getConfiguration());
+            URI[] cacheFiles = context.getCacheFiles();
             if(cacheFiles != null && cacheFiles.length > 0) {
-                for(Path cacheFile : cacheFiles) {
+                for(int i = 0; i < cacheFiles.length; i++) {
+                    Path cacheFile = new Path(cacheFiles[i]);
                     if (cacheFile.getName().toUpperCase().contains("TEMPERATURE")) {
                         readFile(cacheFile);
                     }

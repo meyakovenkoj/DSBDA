@@ -1,15 +1,16 @@
 package com.yakovenko.lab1;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.net.URI;
+import java.util.HashMap;
+
+import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
-import org.apache.hadoop.fs.Path;
-import java.io.IOException;
-import java.util.HashMap;
-import org.apache.hadoop.filecache.DistributedCache;
-import java.io.BufferedReader;
-import java.io.FileReader;
 
 
 public class LabMapper extends Mapper<LongWritable, Text, Text, IntWritable> {
@@ -20,9 +21,10 @@ public class LabMapper extends Mapper<LongWritable, Text, Text, IntWritable> {
     @Override
     protected void setup(Context context) throws IOException, InterruptedException {
         try{
-            Path[] cacheFiles = DistributedCache.getLocalCacheFiles(context.getConfiguration());
+            URI[] cacheFiles = context.getCacheFiles();
             if(cacheFiles != null && cacheFiles.length > 0) {
-                for(Path cacheFile : cacheFiles) {
+                for(int i = 0; i < cacheFiles.length; i++) {
+                    Path cacheFile = new Path(cacheFiles[i]);
                     if (cacheFile.getName().toUpperCase().contains("SECTORS")) {
                         readFile(cacheFile);
                     }
