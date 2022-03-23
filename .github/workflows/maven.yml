@@ -40,7 +40,7 @@ jobs:
     
     - name: Execute jar
       working-directory: ./HW1
-      run: java -cp target/lab1-1.0-SNAPSHOT.jar com.yakovenko.lab1.MapReduceApp input output SECTORS TEMPERATURE
+      run: java -cp /home/runner/work/DSBDA/DSBDA/HW1/target/lab1-1.0-SNAPSHOT.jar com.yakovenko.lab1.MapReduceApp input output SECTORS TEMPERATURE
       
     - name: Plot
       working-directory: ./HW1
