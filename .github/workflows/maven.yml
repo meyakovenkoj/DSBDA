@@ -33,6 +33,11 @@ jobs:
         cache: pip
         architecture: x64
         cache-dependency-path: HW1/requirements.txt
+        
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r HW1/requirements.txt
     
     - name: Generate data
       working-directory: ./HW1
@@ -40,7 +45,7 @@ jobs:
     
     - name: Execute jar
       working-directory: ./HW1
-      run: java -cp target/lab1-1.0-SNAPSHOT-jar-with-dependencies.jar com.yakovenko.lab1.MapReduceApp input output SECTORS TEMPERATURE
+      run: java -cp target/lab1-1.0-SNAPSHOT-jar-with-dependencies.jar com.yakovenko.lab1.MapReduceApp input output SECTORS TEMPERATURE --debug
       
     - name: Plot
       working-directory: ./HW1
