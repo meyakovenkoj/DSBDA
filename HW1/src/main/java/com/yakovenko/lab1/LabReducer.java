@@ -1,19 +1,20 @@
 package com.yakovenko.lab1;
 
-import java.io.*;
-import java.net.URI;
-import java.nio.charset.StandardCharsets;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.TreeMap;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Reducer;
-import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.nio.charset.StandardCharsets;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.TreeMap;
 
 public class LabReducer extends Reducer<Text, IntWritable, Text, IntWritable> {
     private TreeMap<Integer, Integer> temperatureMap = new TreeMap<Integer, Integer>();
@@ -49,9 +50,12 @@ public class LabReducer extends Reducer<Text, IntWritable, Text, IntWritable> {
         while (values.iterator().hasNext()) {
             sum += values.iterator().next().get();
         }
-        Integer temperature = getTemperature(sum);
-//        context.getCounter("Temperature", key.toString()).increment(sum);
-        context.write(key, new IntWritable(temperature));
+        if (sum > 0) {
+            Integer temperature = getTemperature(sum);
+            context.getCounter(CounterType.ACTIVE_SECTORS).increment(1);
+    //        context.getCounter("Temperature", key.toString()).increment(sum);
+            context.write(key, new IntWritable(temperature));
+        }
     }
 
     private void readFile(Path filePath) {

@@ -10,8 +10,8 @@ import org.apache.hadoop.mapreduce.Counter;
 import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
- import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat;
+import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
@@ -64,8 +64,10 @@ public class MapReduceApp extends Configured implements Tool
         job.waitForCompletion(true);
         log.info("=====================JOB ENDED=====================");
         // проверяем статистику по счётчикам
-        Counter counter = job.getCounters().findCounter(CounterType.MALFORMED);
-        log.info("=====================COUNTERS " + counter.getName() + ": " + counter.getValue() + "=====================");
+        Counter counterBad = job.getCounters().findCounter(CounterType.MALFORMED);
+        log.info("=====================COUNTERS " + counterBad.getName() + ": " + counterBad.getValue() + "=====================");
+        Counter counterGood = job.getCounters().findCounter(CounterType.ACTIVE_SECTORS);
+        log.info("=====================COUNTERS " + counterGood.getName() + ": " + counterGood.getValue() + "=====================");
         return 0;
     }
 }

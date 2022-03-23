@@ -1,5 +1,14 @@
 package com.yakovenko.lab1;
 
+import org.apache.commons.io.IOUtils;
+import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.IntWritable;
+import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.Text;
+import org.apache.hadoop.mapreduce.Mapper;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,16 +17,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
-
-import org.apache.commons.io.IOUtils;
-import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.io.IntWritable;
-import org.apache.hadoop.io.LongWritable;
-import org.apache.hadoop.io.Text;
-import org.apache.hadoop.mapreduce.Mapper;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 
 public class LabMapper extends Mapper<LongWritable, Text, Text, IntWritable> {
@@ -46,7 +45,7 @@ public class LabMapper extends Mapper<LongWritable, Text, Text, IntWritable> {
         int x_c = Integer.parseInt(x);
         int y_c = Integer.parseInt(y);
         for (String key:coordinateMap.keySet()) {
-            JSONArray tmp = (JSONArray)coordinateMap.get(key);
+            JSONArray tmp = coordinateMap.get(key);
             JSONArray left = (JSONArray) tmp.get(0);
             JSONArray right = (JSONArray) tmp.get(1);
             if (x_c >= left.getInt(0) && x_c <= right.getInt(0) &&
@@ -61,6 +60,11 @@ public class LabMapper extends Mapper<LongWritable, Text, Text, IntWritable> {
     protected void map(LongWritable key, Text value, Context context) throws IOException, InterruptedException {
         String line = value.toString();
         String[] params = line.split(",");
+        if (params.length < 2) {
+            System.out.println(Arrays.toString(params));
+            context.getCounter(CounterType.MALFORMED).increment(1);
+            return;
+        }
         String sectorName = getSectorName(params[0], params[1]);
 
         if (sectorName == null) {
@@ -73,8 +77,6 @@ public class LabMapper extends Mapper<LongWritable, Text, Text, IntWritable> {
 
     private void readFile(Path filePath) {
         try{
-            // BufferedReader bufferedReader = new BufferedReader(new FileReader(filePath.toString()));
-            // String sectorCoordinates = null;
             InputStream is = new FileInputStream(filePath.toString());
             String jsonTxt = IOUtils.toString(is, StandardCharsets.UTF_8);
             JSONObject json = new JSONObject(jsonTxt);
