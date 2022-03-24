@@ -17,17 +17,27 @@ import org.apache.hadoop.util.ToolRunner;
 
 import java.util.Objects;
 
-
-public class MapReduceApp extends Configured implements Tool
-{
+/**
+ * Main Application with main function
+ */
+public class MapReduceApp extends Configured implements Tool {
     private static final org.apache.log4j.Logger log = org.apache.log4j.Logger.getLogger(MapReduceApp.class);
     private boolean debug = false;
-    public static void main( String[] args ) throws Exception
-    {
+
+    /**
+     * main function
+     * 
+     * @param args input args
+     * @throws Exception
+     */
+    public static void main(String[] args) throws Exception {
         int exitCode = ToolRunner.run(new MapReduceApp(), args);
         System.exit(exitCode);
     }
 
+    /**
+     * run function for ToolRunner
+     */
     public int run(String[] args) throws Exception {
         if (args.length == 5 && Objects.equals(args[4], "--debug")) {
             debug = true;
@@ -42,6 +52,8 @@ public class MapReduceApp extends Configured implements Tool
         job.setReducerClass(LabReducer.class);
         job.setOutputKeyClass(Text.class);
         job.setOutputValueClass(IntWritable.class);
+
+        // use simple text if we run not in hadoop
         if (debug) {
             job.setOutputFormatClass(TextOutputFormat.class);
         } else {
@@ -53,7 +65,7 @@ public class MapReduceApp extends Configured implements Tool
 
         // add coordinates - sectors dictionary
         job.addCacheFile(new Path(args[2]).toUri());
-        
+
         // add clicks - temperature dictionary
         job.addCacheFile(new Path(args[3]).toUri());
 
@@ -63,11 +75,14 @@ public class MapReduceApp extends Configured implements Tool
         log.info("=====================JOB STARTED=====================");
         job.waitForCompletion(true);
         log.info("=====================JOB ENDED=====================");
-        // проверяем статистику по счётчикам
+
+        // check counters
         Counter counterBad = job.getCounters().findCounter(CounterType.MALFORMED);
-        log.info("=====================COUNTERS " + counterBad.getName() + ": " + counterBad.getValue() + "=====================");
+        log.info("=====================COUNTERS " + counterBad.getName() + ": " + counterBad.getValue()
+                + "=====================");
         Counter counterGood = job.getCounters().findCounter(CounterType.ACTIVE_SECTORS);
-        log.info("=====================COUNTERS " + counterGood.getName() + ": " + counterGood.getValue() + "=====================");
+        log.info("=====================COUNTERS " + counterGood.getName() + ": " + counterGood.getValue()
+                + "=====================");
         return 0;
     }
 }
