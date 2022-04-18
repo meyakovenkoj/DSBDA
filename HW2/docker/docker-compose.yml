@@ -56,7 +56,8 @@ services:
       - "50075:50075"
       - "50090:50090"
     depends_on:
-      db:
-        condition: service_healthy
+      -db
+      # :
+      #   condition: service_healthy
     links:
       - db
