@@ -26,7 +26,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Build the stack
         working-directory: ./HW2/docker
-        run: docker-compose up --build
+        run: pwd && docker-compose up --build
 
       - name: Test
         run: docker exec -it spark-hadoop /root/start.sh com.yakovenko.lab2.SparkSQLApplication SparkSQLApplication lab2-1.0-SNAPSHOT-jar-with-dependencies.jar
