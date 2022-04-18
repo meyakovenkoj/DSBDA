@@ -23,10 +23,15 @@ jobs:
         working-directory: ./HW2
         run: mvn -B package --file pom.xml
 
-      - uses: actions/checkout@v2
       - name: Build the stack
         working-directory: ./HW2/docker
-        run: docker-compose up --build
+        run: docker-compose up -d --build
+
+      - name: Show containers
+        run: docker ps -a
 
       - name: Test
         run: docker exec -it spark-hadoop /root/start.sh com.yakovenko.lab2.SparkSQLApplication SparkSQLApplication lab2-1.0-SNAPSHOT-jar-with-dependencies.jar
+      - name: Stop containers
+        if: always()
+        run: docker-compose -f "docker-compose.yml" down
