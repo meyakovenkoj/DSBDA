@@ -36,6 +36,9 @@ jobs:
       - name: Show containers
         run: docker ps -a
 
+      - name: Check safemode
+        run: while docker exec -t spark-hadoop /bin/bash -c "hdfs dfsadmin -safemode get" | grep ON ; do sleep 10; done && echo "Hadoop is ready"
+
       - name: Test
         run: docker exec -t spark-hadoop /bin/bash -c "/root/start.sh com.yakovenko.lab2.SparkSQLApplication SparkSQLApplication lab2-1.0-SNAPSHOT-jar-with-dependencies.jar"
 
