@@ -15,6 +15,7 @@ services:
       - POSTGRES_DB=postgres_db
       - POSTGRES_PORT=5432
       - POSTGRES_USER=postgres_user
+    tty: true
     volumes:
       - ./postgresql/data:/var/lib/postgresql/data
       - ./postgresql/scripts/scheme.sql:/docker-entrypoint-initdb.d/create_tables.sql
@@ -55,7 +56,7 @@ services:
       - "50075:50075"
       - "50090:50090"
     depends_on:
-      - db
-        # condition: service_healthy
+      db:
+        condition: service_healthy
     links:
       - db

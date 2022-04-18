@@ -37,3 +37,5 @@ ENV PATH=$PATH:/spark-2.3.1-bin-hadoop2.7/bin
 
 COPY ./start.sh /root/
 RUN chmod +x /root/start.sh
+
+ENTRYPOINT [ "/root/start.sh", "com.yakovenko.lab2.SparkSQLApplication", "SparkSQLApplication", "lab2-1.0-SNAPSHOT-jar-with-dependencies.jar" ]
