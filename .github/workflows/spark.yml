@@ -37,10 +37,10 @@ jobs:
         run: docker ps -a
 
       - name: Test
-        run: docker exec -t -it spark-hadoop /bin/bash -c "/root/start.sh com.yakovenko.lab2.SparkSQLApplication SparkSQLApplication lab2-1.0-SNAPSHOT-jar-with-dependencies.jar"
+        run: docker exec -t spark-hadoop /bin/bash -c "/root/start.sh com.yakovenko.lab2.SparkSQLApplication SparkSQLApplication lab2-1.0-SNAPSHOT-jar-with-dependencies.jar"
 
       - name: Debug test
-        run: docker exec -t -it spark-hadoop /bin/bash -c "hdfs dfs -cat /user/root/inputs/part*"
+        run: docker exec -t spark-hadoop /bin/bash -c "hdfs dfs -cat /user/root/inputs/part*"
 
       - name: Stop containers
         working-directory: ./HW2/docker
