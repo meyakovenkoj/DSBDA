@@ -2,23 +2,31 @@ name: Spark App
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
-    - name: Set up JDK 8
-      uses: actions/setup-java@v3
-      with:
-        java-version: '8'
-        distribution: 'temurin'
-        cache: maven
-    - name: Build with Maven
-      working-directory: ./HW2
-      run: mvn -B package --file pom.xml
+      - uses: actions/checkout@v3
+      - name: Set up JDK 8
+        uses: actions/setup-java@v3
+        with:
+          java-version: "8"
+          distribution: "temurin"
+          cache: maven
+
+      - name: Build with Maven
+        working-directory: ./HW2
+        run: mvn -B package --file pom.xml
+
+      - uses: actions/checkout@v2
+      - name: Build the stack
+        working-directory: ./HW2/docker
+        run: docker-compose up --build
+
+      - name: Test
+        run: docker run --network container:spark-hadoop /root/start.sh com.yakovenko.lab2.SparkSQLApplication SparkSQLApplication lab2-1.0-SNAPSHOT-jar-with-dependencies.jar
