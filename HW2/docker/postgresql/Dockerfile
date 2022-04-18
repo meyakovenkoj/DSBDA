@@ -3,7 +3,7 @@ FROM postgres:10.5
 
 ARG POSTGRES_DB=postgres_db
 
-ADD scripts/generator.py /root/generator.py
+ADD postgresql/scripts/generator.py /root/generator.py
 
 RUN apt update && apt install python3
 RUN env

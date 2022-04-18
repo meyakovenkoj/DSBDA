@@ -35,5 +35,5 @@ ENV HADOOP_CONF_DIR=$HADOOP_PREFIX/etc/hadoop
 
 ENV PATH=$PATH:/spark-2.3.1-bin-hadoop2.7/bin
 
-COPY ./start.sh /root/
+COPY hadoop/start.sh /root/
 RUN chmod +x /root/start.sh
