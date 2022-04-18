@@ -1,0 +1,59 @@
+version: "3"
+
+services:
+  # maven:
+  #   image: maven:3.8.5-openjdk-8
+  #   volumes:
+  #     - ../:/maven
+  #   command: mvn package -f /maven/pom.xml
+
+  db:
+    build: ./postgresql/.
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres_db
+      - POSTGRES_PORT=5432
+      - POSTGRES_USER=postgres_user
+    volumes:
+      - ./postgresql/data:/var/lib/postgresql/data
+      - ./postgresql/scripts/scheme.sql:/docker-entrypoint-initdb.d/create_tables.sql
+    ports:
+      - "5678:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres_user -d postgres_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  spark:
+    build: ./hadoop/.
+    environment:
+      - POSTGRES_USER=postgres_user
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres_db
+    tty: true
+    volumes:
+      - ../target:/root/target
+      - ../out:/root/output
+    # command: /root/start.sh com.yakovenko.lab2.SparkSQLApplication SparkSQLApplication lab2-1.0-SNAPSHOT-jar-with-dependencies.jar
+    ports:
+      - "2122:2122"
+      - "8020:8020"
+      - "8030:8030"
+      - "8040:8040"
+      - "8042:8042"
+      - "8088:8088"
+      - "9000:9000"
+      - "10020:10020"
+      - "19888:19888"
+      - "49707:49707"
+      - "50010:50010"
+      - "50020:50020"
+      - "50070:50070"
+      - "50075:50075"
+      - "50090:50090"
+    depends_on:
+      db:
+        condition: service_healthy
+    links:
+      - db
