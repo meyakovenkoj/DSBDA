@@ -8,6 +8,7 @@ services:
   #   command: mvn package -f /maven/pom.xml
 
   db:
+    container_name: database
     build: ./postgresql/.
     environment:
       - POSTGRES_PASSWORD=postgres
@@ -26,6 +27,7 @@ services:
       retries: 5
 
   spark:
+    container_name: spark-hadoop
     build: ./hadoop/.
     environment:
       - POSTGRES_USER=postgres_user
