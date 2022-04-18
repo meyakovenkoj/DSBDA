@@ -13,6 +13,6 @@ public class SparkSQLApplication {
      * @param args - args[0]: входной файл, args[1] - выходная папка
      */
     public static void main(String[] args) {
-        
+        log.info("===========RESULT=========== ");
     }
 }
