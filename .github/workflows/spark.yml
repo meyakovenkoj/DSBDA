@@ -30,15 +30,17 @@ jobs:
       - name: Show containers
         run: docker ps -a
 
-      - name: Start containers
-        working-directory: ./HW2/docker
-        run: docker-compose up -d ; sleep 10
+      - name: Wait for containers
+        run: sleep 10
 
       - name: Show containers
         run: docker ps -a
 
       - name: Test
-        run: docker run spark-hadoop /root/start.sh com.yakovenko.lab2.SparkSQLApplication SparkSQLApplication lab2-1.0-SNAPSHOT-jar-with-dependencies.jar
+        run: docker exec -it spark-hadoop /bin/bash -c "/root/start.sh com.yakovenko.lab2.SparkSQLApplication SparkSQLApplication lab2-1.0-SNAPSHOT-jar-with-dependencies.jar"
+
+      - name: Debug test
+        run: docker exec -it spark-hadoop /bin/bash -c "hdfs dfs -cat /user/root/inputs/part*"
 
       - name: Stop containers
         working-directory: ./HW2/docker
