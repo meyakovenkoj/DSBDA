@@ -64,7 +64,7 @@ public class SparkSQLApplication {
         log.info("Total execution time: " + (endTime - startTime));
         result.toDF(result.columns())
                 .write()
-                .option("header", true)
+                .option("header", false)
                 .csv(hdfsURL + outputDir);
     }
 }

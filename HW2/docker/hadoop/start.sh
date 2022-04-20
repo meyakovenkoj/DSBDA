@@ -12,9 +12,9 @@ spark-submit --class $1 \
     --executor-memory 1g --name factorial \
     --conf "spark.app.id=$2" \
     /root/target/$3 \
-    user/root/inputs/ out
+    user/root/inputs/ user/root/out/
 
 echo "DONE! RESULT IS: "
-hdfs fs -cat  /user/root/out/part-00000
+hdfs dfs -cat /user/root/out/*.csv
 
-hdfs fs -get /user/root/out/part-00000 /root/output/part-00000
+# hdfs dfs -get /user/root/out/*.csv /root/output/result.csv
