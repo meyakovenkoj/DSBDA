@@ -14,8 +14,8 @@ public class SparkSQLApplication {
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(SparkSQLApplication.class);
 
     public static void main(String[] args) {
-        if (args.length < 2) {
-            throw new RuntimeException("Usage: java -jar SparkSQLApplication.jar input.file outputDirectory");
+        if (args.length < 3) {
+            throw new RuntimeException("Usage: java -jar SparkSQLApplication.jar input_compute input_data outputDirectory");
         }
         String inputDirCompute = args[0];
         String inputDirData = args[1];
@@ -50,19 +50,12 @@ public class SparkSQLApplication {
         dfCompute = dfCompute.withColumn("value", dfCompute.col("value").cast("Long"));
         dfCompute.printSchema();
         dfCompute.show();
-        // for (String col : df.columns()) {
-        // df = df.withColumn(
-        // col,
-        // df.col(col).cast("Long")
-        // );
-        // }
         dfData = dfData.withColumnRenamed("_c0", "key_id");
         dfData = dfData.withColumnRenamed("_c1", "value");
         dfData = dfData.withColumn("value", dfData.col("value").cast("Long"));
         dfData.printSchema();
         dfData.show();
         log.info("========== Print Data ==============");
-        // df.printSchema();
         Dataset<Row> resultData = ProcessCounter.process(dfData, ActionType.DATA_INTENSIVE);
         Dataset<Row> resultCompute = ProcessCounter.process(dfCompute, ActionType.COMPUTE_INTENSIVE);
         final long endTime = System.currentTimeMillis();

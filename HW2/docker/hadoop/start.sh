@@ -4,13 +4,13 @@ sqoop import \
     --connect "jdbc:postgresql://db:5432/$POSTGRES_DB?ssl=false" \
     --username "$POSTGRES_USER" --password "$POSTGRES_PASSWORD" \
     --target-dir 'compute_intensive' \
-    --query "select val from compute_intensive where \$CONDITIONS" -m 1
+    --query "select val from compute_intensive where \$CONDITIONS" --split-by "id"
 
 sqoop import \
     --connect "jdbc:postgresql://db:5432/$POSTGRES_DB?ssl=false" \
     --username "$POSTGRES_USER" --password "$POSTGRES_PASSWORD" \
     --target-dir 'data_intensive' \
-    --query "select key_id, val from data_intensive where \$CONDITIONS" -m 1
+    --query "select key_id, val from data_intensive where \$CONDITIONS" --split-by "id"
 
 
 spark-submit --class $1 \

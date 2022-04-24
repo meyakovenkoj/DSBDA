@@ -42,9 +42,13 @@ jobs:
       - name: Test
         run: docker exec -t spark-hadoop /bin/bash -c "/root/start.sh com.yakovenko.lab2.SparkSQLApplication SparkSQLApplication lab2-1.0-SNAPSHOT-jar-with-dependencies.jar"
 
-      - name: Debug test
+      - name: Read result from hdfs
         run: |
+          echo "Data intensive"
+          echo "key, value"
           docker exec -t spark-hadoop /bin/bash -c "hdfs dfs -cat /user/root/out/data/part*"
+          echo "Compute intensive"
+          echo "value"
           docker exec -t spark-hadoop /bin/bash -c "hdfs dfs -cat /user/root/out/compute/part*"
 
       - name: Stop containers
