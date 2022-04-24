@@ -43,31 +43,22 @@ public class SparkSQLApplication {
         }
         Dataset<Row> dfCompute = sc.read().csv(hdfsURL + inputDirCompute);
         Dataset<Row> dfData = sc.read().csv(hdfsURL + inputDirData);
+
+        ComputeWorker cWorker = new ComputeWorker(dfCompute);
+        DataWorker dWorker = new DataWorker(dfData);
+
         log.info("===============COUNTING...================");
         final long startTime = System.currentTimeMillis();
-        log.info("========== Print Schema ============");
-        dfCompute = dfCompute.withColumnRenamed("_c0", "value");
-        dfCompute = dfCompute.withColumn("value", dfCompute.col("value").cast("Long"));
-        dfCompute.printSchema();
-        dfCompute.show();
-        dfData = dfData.withColumnRenamed("_c0", "key_id");
-        dfData = dfData.withColumnRenamed("_c1", "value");
-        dfData = dfData.withColumn("value", dfData.col("value").cast("Long"));
-        dfData.printSchema();
-        dfData.show();
-        log.info("========== Print Data ==============");
-        Dataset<Row> resultData = ProcessCounter.process(dfData, ActionType.DATA_INTENSIVE);
-        Dataset<Row> resultCompute = ProcessCounter.process(dfCompute, ActionType.COMPUTE_INTENSIVE);
+        log.info("========== Print Schema and Data ============");
+        cWorker.show();
+        dWorker.show();
+        log.info("========== Process Data ==============");
+        cWorker.process();
+        dWorker.process();
         final long endTime = System.currentTimeMillis();
         log.info("============SAVING FILE TO " + hdfsURL + outputDir + " directory============");
         log.info("Total execution time: " + (endTime - startTime));
-        resultData.toDF(resultData.columns())
-                .write()
-                .option("header", false)
-                .csv(hdfsURL + outputDir + "/data");
-        resultCompute.toDF(resultCompute.columns())
-                .write()
-                .option("header", false)
-                .csv(hdfsURL + outputDir + "/compute");
+        cWorker.save(hdfsURL + outputDir + "/data");
+        dWorker.save(hdfsURL + outputDir + "/compute");
     }
 }
