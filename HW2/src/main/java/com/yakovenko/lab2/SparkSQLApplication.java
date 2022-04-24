@@ -15,7 +15,7 @@ public class SparkSQLApplication {
 
     public static void main(String[] args) {
         if (args.length < 3) {
-            throw new RuntimeException("Usage: java -jar SparkSQLApplication.jar input_compute input_data outputDirectory");
+            throw new RuntimeException("Usage: java -jar SparkSQLApplication.jar inputCompute inputData outputDirectory");
         }
         String inputDirCompute = args[0];
         String inputDirData = args[1];
@@ -57,7 +57,7 @@ public class SparkSQLApplication {
         dWorker.process();
         final long endTime = System.currentTimeMillis();
         log.info("============SAVING FILE TO " + hdfsURL + outputDir + " directory============");
-        log.info("Total execution time: " + (endTime - startTime));
+        log.info(String.format("===Total execution time: %l ms ===", (endTime - startTime)));
         cWorker.save(hdfsURL + outputDir + "/data");
         dWorker.save(hdfsURL + outputDir + "/compute");
     }
