@@ -37,7 +37,6 @@ public class SparkTest {
                 .format("csv")
                 .option("header", true)
                 .load(getClass().getResource(dataValid).toString());
-        trueResult = trueResult.withColumn("sum(value)", trueResult.col("sum(value)").cast("Long"));
         compare(trueResult, result);
     }
 
