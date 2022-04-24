@@ -1,5 +1,6 @@
 # DSBDA
-
+![Hadoop build](https://github.com/meyakovenkoj/DSBDA/actions/workflows/maven.yml/badge.svg)
+![Spark build](https://github.com/meyakovenkoj/DSBDA/actions/workflows/spark.yml/badge.svg)
 Repository for Data Science and Big Data Analytics
 _Course was taken in 2022 in NRNU MEPhI_
 
@@ -8,7 +9,7 @@ _Course was taken in 2022 in NRNU MEPhI_
 There will be some homeworks for this course and instructions for building and testing for each of them.
 
 # Homework 1 - Click-map
-
+![Hadoop build](https://github.com/meyakovenkoj/DSBDA/actions/workflows/maven.yml/badge.svg)
 ### Task
 
 #### Logic
@@ -29,7 +30,7 @@ SequenceFile со Snappy сжатием (плюс команда просмот�
 Использование Счетчиков. Приложить скриншот использования Счетчиков.
 
 # Homework 2
-
+![Spark build](https://github.com/meyakovenkoj/DSBDA/actions/workflows/spark.yml/badge.svg)
 ### Task
 
 #### Logic
