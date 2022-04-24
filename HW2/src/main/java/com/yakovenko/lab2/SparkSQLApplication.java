@@ -64,7 +64,7 @@ public class SparkSQLApplication {
         dWorker.process();
         final long endTime = System.currentTimeMillis();
         log.info("============SAVING FILE TO " + hdfsURL + outputDir + " directory============");
-        log.info(String.format("===Total execution time: %l ms ===", (endTime - startTime)));
+        log.info(String.format("===Total execution time: %d ms ===", (endTime - startTime)));
         cWorker.save(hdfsURL + outputDir + "/data");
         dWorker.save(hdfsURL + outputDir + "/compute");
     }
