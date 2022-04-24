@@ -10,9 +10,14 @@ public abstract class ProcessWorker {
     abstract protected void prepare();
     abstract public void process();
     abstract public void save(String path);
+    abstract public Dataset<Row> get();
     public void show() {
-        dataset.schema();
-        dataset.show();
-        result.show();
+        if (dataset != null){
+            dataset.schema();
+            dataset.show();
+        }
+        if (result != null) {
+            result.show();
+        }
     }
 }
