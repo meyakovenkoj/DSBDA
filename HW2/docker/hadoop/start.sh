@@ -21,6 +21,6 @@ spark-submit --class $1 \
     user/root/compute_intensive/ user/root/data_intensive/ user/root/out/
 
 echo "DONE! RESULT IS: "
-hdfs dfs -cat /user/root/out/*.csv
+# hdfs dfs -cat /user/root/out/*.csv
 
 # hdfs dfs -get /user/root/out/*.csv /root/output/result.csv

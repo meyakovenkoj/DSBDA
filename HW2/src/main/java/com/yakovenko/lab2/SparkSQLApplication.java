@@ -10,10 +10,6 @@ import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
 
-import scala.math.BigInt;
-
-
-
 public class SparkSQLApplication {
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(SparkSQLApplication.class);
 
@@ -36,11 +32,11 @@ public class SparkSQLApplication {
         try {
             fileSystem = FileSystem.get(new URI(hdfsURL), sc.sparkContext().hadoopConfiguration());
 
-        Path outputDirectory = new Path(hdfsURL + outputDir);
-        if (fileSystem.exists(outputDirectory)) {
-            log.info("=== Deleting output directory ===");
-            fileSystem.delete(outputDirectory, true);
-        }
+            Path outputDirectory = new Path(hdfsURL + outputDir);
+            if (fileSystem.exists(outputDirectory)) {
+                log.info("=== Deleting output directory ===");
+                fileSystem.delete(outputDirectory, true);
+            }
         } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
             return;
@@ -50,26 +46,35 @@ public class SparkSQLApplication {
         log.info("===============COUNTING...================");
         final long startTime = System.currentTimeMillis();
         log.info("========== Print Schema ============");
+        dfCompute = dfCompute.withColumnRenamed("_c0", "value");
+        dfCompute = dfCompute.withColumn("value", dfCompute.col("value").cast("Long"));
         dfCompute.printSchema();
         dfCompute.show();
         // for (String col : df.columns()) {
-        //     df = df.withColumn(
-        //         col,
-        //         df.col(col).cast("Long")
-        //     );
+        // df = df.withColumn(
+        // col,
+        // df.col(col).cast("Long")
+        // );
         // }
+        dfData = dfData.withColumnRenamed("_c0", "key_id");
+        dfData = dfData.withColumnRenamed("_c1", "value");
+        dfData = dfData.withColumn("value", dfData.col("value").cast("Long"));
         dfData.printSchema();
         dfData.show();
         log.info("========== Print Data ==============");
         // df.printSchema();
-        // Dataset<Row> result = ProcessCounter.process(df);
-        // result.show();
+        Dataset<Row> resultData = ProcessCounter.process(dfData, ActionType.DATA_INTENSIVE);
+        Dataset<Row> resultCompute = ProcessCounter.process(dfCompute, ActionType.COMPUTE_INTENSIVE);
         final long endTime = System.currentTimeMillis();
         log.info("============SAVING FILE TO " + hdfsURL + outputDir + " directory============");
         log.info("Total execution time: " + (endTime - startTime));
-        // result.toDF(result.columns())
-        //         .write()
-        //         .option("header", false)
-        //         .csv(hdfsURL + outputDir);
+        resultData.toDF(resultData.columns())
+                .write()
+                .option("header", false)
+                .csv(hdfsURL + outputDir + "/data");
+        resultCompute.toDF(resultCompute.columns())
+                .write()
+                .option("header", false)
+                .csv(hdfsURL + outputDir + "/compute");
     }
 }
