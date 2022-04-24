@@ -3,13 +3,23 @@ package com.yakovenko.lab2;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 
+/**
+ * Data intensive worker. Sum all elements by key_id
+ */
 public class DataWorker extends ProcessWorker {
 
+    /**
+     * Constructor, calls prepare for inputDataset
+     * @param inputDataset dataset for work
+     */
     public DataWorker(Dataset<Row> inputDataset) {
         dataset = inputDataset;
         prepare();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void prepare() {
         if (dataset == null) {
@@ -24,6 +34,9 @@ public class DataWorker extends ProcessWorker {
         dataset = dataset.withColumn("value", dataset.col("value").cast("Long"));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void process() {
         if (dataset == null) {
@@ -36,6 +49,9 @@ public class DataWorker extends ProcessWorker {
         result = dataset.groupBy(dataset.col("key_id")).sum();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void save(String path) {
         if (result == null) {
@@ -48,12 +64,18 @@ public class DataWorker extends ProcessWorker {
         .csv(path);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void show() {
         System.out.println("Data intensive:");
         super.show();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Dataset<Row> get() {
         return result;

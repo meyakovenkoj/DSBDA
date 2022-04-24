@@ -8,7 +8,9 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-
+/**
+ * Spark tests for main functions
+ */
 public class SparkTest {
     private SparkSession sc = SparkSession
     .builder()
@@ -24,6 +26,10 @@ public class SparkTest {
     private Dataset<Row> testData;
     private Dataset<Row> testCompute;
 
+    /**
+     * Test data intensive computing.
+     * Read data from test-data.csv and compare result with valid-data.csv
+     */
     @Test
     public void testDataDataset() {
         testData = sc.read().csv(getClass().getResource(dataRes).toString());
@@ -40,6 +46,10 @@ public class SparkTest {
         compare(trueResult, result);
     }
 
+    /**
+     * Test compute intensive computing.
+     * Read data from test-compute.csv and compare result with valid-compute.csv
+     */
     @Test
     public void testComputeDataset() {
         testCompute = sc.read().csv(getClass().getResource(computeRes).toString());
@@ -57,6 +67,10 @@ public class SparkTest {
         compare(trueResult, result);
     }
 
+    /**
+     * Test empty data
+     * Expecting null
+     */
     @Test
     public void testEmptyDataSet() {
         Dataset<Row> empty = sc.emptyDataFrame();
@@ -74,6 +88,11 @@ public class SparkTest {
 
     }
 
+    /**
+     * Compare two datasets. Combine datasets and check for 0 size.
+     * @param trueDataset validation data
+     * @param resultDataset computed data
+     */
     private void compare(Dataset<Row> trueDataset, Dataset<Row> resultDataset) {
         Dataset<Row> df = trueDataset.except(resultDataset);
         assertEquals(df.count(), 0);

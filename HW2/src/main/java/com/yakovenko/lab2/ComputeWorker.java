@@ -4,13 +4,23 @@ import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import static org.apache.spark.sql.functions.*;
 
+/**
+ * Compute intensive worker. Computes factorial for each of dataset[0] elements
+ */
 public class ComputeWorker extends ProcessWorker {
 
+    /**
+     * Constructor, calls prepare for inputDataset
+     * @param inputDataset dataset for work
+     */
     public ComputeWorker(Dataset<Row> inputDataset) {
         dataset = inputDataset;
         prepare();
     }
-   
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected void prepare() {
         if (dataset == null) {
@@ -24,6 +34,9 @@ public class ComputeWorker extends ProcessWorker {
         dataset = dataset.withColumn("value", dataset.col("value").cast("Long"));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void process() {
         if (dataset == null) {
@@ -38,6 +51,9 @@ public class ComputeWorker extends ProcessWorker {
                         factorial(dataset.col("value")));
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void save(String path) {
         if (result == null) {
@@ -50,12 +66,18 @@ public class ComputeWorker extends ProcessWorker {
         .csv(path);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void show() {
         System.out.println("Compute intensive:");
         super.show();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Dataset<Row> get() {
         return result;

@@ -10,9 +10,16 @@ import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
 
+/**
+ * Main Spark application
+ */
 public class SparkSQLApplication {
     private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(SparkSQLApplication.class);
 
+    /**
+     * Entry point. Accepts 3 arguments
+     * @param args inputCompute inputData outputDirectory
+     */
     public static void main(String[] args) {
         if (args.length < 3) {
             throw new RuntimeException("Usage: java -jar SparkSQLApplication.jar inputCompute inputData outputDirectory");
