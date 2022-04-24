@@ -1,5 +1,7 @@
 package com.yakovenko.lab2;
 
+import java.util.Arrays;
+
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 
@@ -19,5 +21,12 @@ public abstract class ProcessWorker {
         if (result != null) {
             result.show();
         }
+    }
+    public boolean checkColumn(String column) {
+        if (Arrays.asList(dataset.columns()).contains(column)) {
+            return true;
+        }
+        System.err.println(String.format("ERROR: dataset no %s column", column));
+        return false;
     }
 }

@@ -16,6 +16,9 @@ public class DataWorker extends ProcessWorker {
             System.err.println("ERROR: dataset is null");
             return;
         }
+        if (!checkColumn("_c0") || !checkColumn("_c1")) {
+            return;
+        }
         dataset = dataset.withColumnRenamed("_c0", "key_id");
         dataset = dataset.withColumnRenamed("_c1", "value");
         dataset = dataset.withColumn("value", dataset.col("value").cast("Long"));
@@ -25,6 +28,9 @@ public class DataWorker extends ProcessWorker {
     public void process() {
         if (dataset == null) {
             System.err.println("ERROR: dataset is null");
+            return;
+        }
+        if(!checkColumn("key_id")){
             return;
         }
         result = dataset.groupBy(dataset.col("key_id")).sum();

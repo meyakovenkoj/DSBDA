@@ -17,6 +17,9 @@ public class ComputeWorker extends ProcessWorker {
             System.err.println("ERROR: dataset is null");
             return;
         }
+        if(!checkColumn("_c0")) {
+            return;
+        }
         dataset = dataset.withColumnRenamed("_c0", "value");
         dataset = dataset.withColumn("value", dataset.col("value").cast("Long"));
     }
@@ -25,6 +28,9 @@ public class ComputeWorker extends ProcessWorker {
     public void process() {
         if (dataset == null) {
             System.err.println("ERROR: dataset is null");
+            return;
+        }
+        if(!checkColumn("value")) {
             return;
         }
         result = dataset.withColumn(
