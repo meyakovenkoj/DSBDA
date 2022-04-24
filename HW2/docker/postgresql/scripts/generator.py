@@ -15,7 +15,7 @@ parser.set_defaults(debug=False, auto=False)
 
 def generate(max, len):
     array = [str(random.randint(0, max)) for _ in range(len)]
-    return ",".join(array)
+    return ", ".join(array)
 
 
 def load(count, max, len, database, auto):
@@ -35,15 +35,17 @@ def load(count, max, len, database, auto):
 
     with open('dump.sql', 'w') as fd:
         for _ in range(count):
-            sqltext = 'INSERT INTO "inputs" (val) VALUES ( \'{' + \
-                generate(max, len)+'}\' );'
+            sqltext = 'INSERT INTO "compute_intensive" (val) VALUES ( ' + \
+                generate(max, 1) + ' );\n'
+            sqltext += 'INSERT INTO "data_intensive" (key_id, array_id, val) VALUES ( ' + \
+                '{}, '.format(random.randint(0, 10)) + generate(max, 2) + ' );'
             print(sqltext, file=fd)
             if auto:
                 insert = psycopg2.sql.SQL(sqltext)
                 cursor.execute(insert)
 
     if auto:
-        cursor.execute('SELECT * FROM "inputs"')
+        cursor.execute('SELECT * FROM "compute_intensive"')
         records = cursor.fetchall()
         print('Total items in table: %d' % (len(records)))
         conn.commit()

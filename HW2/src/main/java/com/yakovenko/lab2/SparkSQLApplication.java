@@ -10,6 +10,8 @@ import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
 
+import scala.math.BigInt;
+
 
 
 public class SparkSQLApplication {
@@ -19,8 +21,9 @@ public class SparkSQLApplication {
         if (args.length < 2) {
             throw new RuntimeException("Usage: java -jar SparkSQLApplication.jar input.file outputDirectory");
         }
-        String inputDir = args[0];
-        String outputDir = args[1];
+        String inputDirCompute = args[0];
+        String inputDirData = args[1];
+        String outputDir = args[2];
         log.info("Appliction started!");
         log.debug("Application started");
         SparkSession sc = SparkSession
@@ -42,29 +45,31 @@ public class SparkSQLApplication {
             e.printStackTrace();
             return;
         }
-        Dataset<Row> df = sc.read().csv(hdfsURL + inputDir);
+        Dataset<Row> dfCompute = sc.read().csv(hdfsURL + inputDirCompute);
+        Dataset<Row> dfData = sc.read().csv(hdfsURL + inputDirData);
         log.info("===============COUNTING...================");
         final long startTime = System.currentTimeMillis();
         log.info("========== Print Schema ============");
-        df.printSchema();
-        for (String col : df.columns()) {
-            df = df.withColumn(
-                col,
-                df.col(col).cast("Long")
-            );
-        }
-
+        dfCompute.printSchema();
+        dfCompute.show();
+        // for (String col : df.columns()) {
+        //     df = df.withColumn(
+        //         col,
+        //         df.col(col).cast("Long")
+        //     );
+        // }
+        dfData.printSchema();
+        dfData.show();
         log.info("========== Print Data ==============");
-        df.printSchema();
-        df.show();
-        Dataset<Row> result = ProcessCounter.process(df);
-        result.show();
+        // df.printSchema();
+        // Dataset<Row> result = ProcessCounter.process(df);
+        // result.show();
         final long endTime = System.currentTimeMillis();
         log.info("============SAVING FILE TO " + hdfsURL + outputDir + " directory============");
         log.info("Total execution time: " + (endTime - startTime));
-        result.toDF(result.columns())
-                .write()
-                .option("header", false)
-                .csv(hdfsURL + outputDir);
+        // result.toDF(result.columns())
+        //         .write()
+        //         .option("header", false)
+        //         .csv(hdfsURL + outputDir);
     }
 }
