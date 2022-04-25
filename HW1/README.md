@@ -1,5 +1,7 @@
 # Lab 1 Click heatmap
 
+[![Java CI with Maven](https://github.com/meyakovenkoj/DSBDA/actions/workflows/maven.yml/badge.svg)](https://github.com/meyakovenkoj/DSBDA/actions/workflows/maven.yml)
+
 ## Task
 
 #### Logic
