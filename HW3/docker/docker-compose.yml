@@ -1,0 +1,50 @@
+version: "3.2"
+
+services:
+  elasticsearch:
+    build:
+      context: elasticsearch/
+    volumes:
+      - type: bind
+        source: ./elasticsearch/config/elasticsearch.yml
+        target: /usr/share/elasticsearch/config/elasticsearch.yml
+        read_only: true
+      - type: volume
+        source: elasticsearch
+        target: /usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+      ELASTIC_PASSWORD: changeme
+      # Use single node discovery in order to disable production mode and avoid bootstrap checks.
+      # see: https://www.elastic.co/guide/en/elasticsearch/reference/current/bootstrap-checks.html
+      discovery.type: single-node
+    networks:
+      - elk
+
+  grafana:
+    image: grafana/grafana
+    environment:
+      - "GF_AUTH_ANONYMOUS_ENABLED=true"
+      - "GF_AUTH_ANONYMOUS_ORG_ROLE=Admin"
+      - "GF_AUTH_ANONYMOUS_HIDE_VERSION=true"
+    volumes:
+      # Mount provisioning configuration
+      - "./grafana/provisioning:/etc/grafana/provisioning"
+      # Mount dashboards
+      - "./grafana/dashboards:/var/lib/grafana/dashboards"
+    ports:
+      - "3000:3000"
+    networks:
+      - elk
+    depends_on:
+      - elasticsearch
+
+networks:
+  elk:
+    driver: bridge
+
+volumes:
+  elasticsearch:

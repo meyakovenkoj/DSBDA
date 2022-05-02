@@ -15,3 +15,21 @@ log4j async or any http appender
 ## Visualization
 
 Grafana
+
+## Usage
+
+Set app ID and Service token in env:
+```
+export APPID=xxx
+export TOKEN=xxx
+```
+
+Start getting messages from VK Streaming API:
+
+```bash
+curl --location --request POST 'http://localhost:8080/start' \
+--header 'Content-Type: application/x-www-form-urlencoded' \
+--data-urlencode "appId=$APPID" \
+--data-urlencode "token=$TOKEN"
+```
+

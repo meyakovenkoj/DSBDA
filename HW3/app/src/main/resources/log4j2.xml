@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Configuration status="INFO">
+<Appenders>
+    <Http name="httpAppender" url="http://localhost:9200/data/response/">
+        <Property name="Content-Type" value="application/json" />
+        <PatternLayout pattern='{"date":"%d{ISO8601}","thread":"[%t]","level":"%-5level","logger":"%logger{36}","message":%msg}' />
+    </Http>
+    <Console name="ConsoleDebug" target="SYSTEM_OUT">
+        <PatternLayout pattern="%msg" />
+    </Console>
+    <Console name="Console" target="SYSTEM_OUT">
+        <PatternLayout pattern="%d{HH:mm:ss.SSS} %-5level - %msg%n"/>
+    </Console>
+  </Appenders>
+  <Loggers>
+      <Logger name="CONSOLE_APPENDER" level="INFO"
+              additivity="false">
+          <AppenderRef ref="Console2" />
+      </Logger>
+      <Logger name="HTTP_APPENDER" level="INFO"
+              additivity="false">
+          <AppenderRef ref="httpAppender" />
+      </Logger>
+    <Root level="info">
+        <AppenderRef ref="Console" />
+    </Root>
+  </Loggers>
+</Configuration>

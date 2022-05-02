@@ -1,0 +1,20 @@
+{
+  "code": 100,
+  "event": {
+    "event_type": "post",
+    "event_id": {
+      "post_owner_id": 123456,
+      "post_id": 54321
+    },
+    "event_url": "https://vk.com/wall123456_54321",
+    "text": "This is event text",
+    "creation_time": 1498569445,
+    "tags": [
+      "2"
+    ],
+    "author": {
+      "id": 123456,
+      "platform": 4
+    }
+  }
+}
