@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @MicronautTest
-public class AggregationServiceImplTest {
+public class AggregationServiceTest {
     private final String message = "{\n" +
             "  \"code\": 100,\n" +
             "  \"event\": {\n" +

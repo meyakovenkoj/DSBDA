@@ -19,6 +19,10 @@ public class AggregationServiceImpl implements AggregationService {
      */
     @Override
     public AggregateResponseDto aggregate(List<StreamingCallbackMessage> responseDtoList) {
+        if (responseDtoList == null) {
+            System.err.println("Not an object");
+            return null;
+        }
         Long count = (long) responseDtoList.size();
         List<String> urls = new ArrayList<>();
         Stream<StreamingCallbackMessage> responses = responseDtoList.stream();

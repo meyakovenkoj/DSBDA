@@ -64,10 +64,13 @@ public class FutureClient {
      * @return Method to get information about the cities initialized in createUris(String token) method
      */
     public List<StreamingCallbackMessage> getStatistics() throws ExecutionException, InterruptedException {
+        if (streamingActor == null) {
+            System.err.println("Not initilized");
+            return null;
+        }
         streamingClient.stream().get(streamingActor, new StreamingEventHandler() {
                 @Override
                 public void handle(StreamingCallbackMessage message) {
-//                    ResponseDto object = gParser.fromJson(message.toString(), ResponseDto.class);
                     results.add(message);
                 }
             }).execute();
