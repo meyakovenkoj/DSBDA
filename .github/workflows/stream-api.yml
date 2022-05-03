@@ -18,16 +18,24 @@ jobs:
           java-version: "8"
           distribution: "temurin"
           cache: maven
+
       - name: Build with Maven
         working-directory: ./HW3/app
         run: mvn -B package --file pom.xml -Dmaven.test.skip=true
+
       - name: Build the stack
         working-directory: ./HW3/docker
         run: docker-compose up -d --build
+
       - name: Show containers
         run: docker ps -a
+
+      - name: Wait for containers
+        run: sleep 10
+
       - name: Check Elasticsearch
         run: curl -XGET "localhost:9200/"
+
       - name: Stop containers
         working-directory: ./HW3/docker
         if: always()
