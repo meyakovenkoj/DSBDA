@@ -1,4 +1,6 @@
-# Lab 2
+# Lab 3
+
+[![Aggregation Service](https://github.com/meyakovenkoj/DSBDA/actions/workflows/stream-api.yml/badge.svg)](https://github.com/meyakovenkoj/DSBDA/actions/workflows/stream-api.yml)
 
 ## Task
 
@@ -19,6 +21,7 @@ Grafana
 ## Usage
 
 Set app ID and Service token in env:
+
 ```
 export APPID=xxx
 export TOKEN=xxx
@@ -32,4 +35,3 @@ curl --location --request POST 'http://localhost:8080/start' \
 --data-urlencode "appId=$APPID" \
 --data-urlencode "token=$TOKEN"
 ```
-
