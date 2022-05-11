@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+>
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.yakovenko.lab3</groupId>
+  <artifactId>lab3</artifactId>
+  <version>1.0-SNAPSHOT</version>
+
+  <name>lab3</name>
+  <description>Stream API aggregator app for lab 3.</description>
+  <url>https://meyakovenkoj.github.io</url>
+
+  <parent>
+    <groupId>io.micronaut</groupId>
+    <artifactId>micronaut-parent</artifactId>
+    <version>3.4.2</version>
+  </parent>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <jdk.version>17</jdk.version>
+    <release.version>17</release.version>
+    <micronaut.version>3.4.2</micronaut.version>
+    <exec.mainClass>com.yakovenko.lab3.AnalyticsApplication</exec.mainClass>
+    <micronaut.runtime>netty</micronaut.runtime>
+  </properties>
+
+  <dependencies>
+    <!-- https://mvnrepository.com/artifact/javax.inject/javax.inject -->
+    <dependency>
+      <groupId>javax.inject</groupId>
+      <artifactId>javax.inject</artifactId>
+      <version>1</version>
+    </dependency>
+
+    <dependency>
+      <groupId>io.micronaut</groupId>
+      <artifactId>micronaut-inject</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.micronaut</groupId>
+      <artifactId>micronaut-validation</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.micronaut.test</groupId>
+      <artifactId>micronaut-test-junit5</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.micronaut</groupId>
+      <artifactId>micronaut-http-client</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.micronaut</groupId>
+      <artifactId>micronaut-http-server-netty</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+        <groupId>io.micronaut.kafka</groupId>
+        <artifactId>micronaut-kafka</artifactId>
+        <scope>compile</scope>
+      </dependency>
+    <dependency>
+      <groupId>io.micronaut</groupId>
+      <artifactId>micronaut-jackson-databind</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.micronaut</groupId>
+      <artifactId>micronaut-runtime</artifactId>
+      <scope>compile</scope>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/junit/junit -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.13.2</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.vk.api</groupId>
+      <artifactId>sdk</artifactId>
+      <version>1.0.14</version>
+    </dependency>
+
+    <dependency>
+      <groupId>com.google.code.gson</groupId>
+      <artifactId>gson</artifactId>
+      <version>2.9.0</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.appenders.log4j</groupId>
+      <artifactId>log4j2-elasticsearch-jest</artifactId>
+      <version>1.5.5</version>
+    </dependency>
+
+    <!-- https://mvnrepository.com/artifact/org.projectlombok/lombok -->
+    <dependency>
+      <groupId>org.projectlombok</groupId>
+      <artifactId>lombok</artifactId>
+      <version>1.18.24</version>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <!-- lock down plugins versions to avoid using Maven defaults (may be moved to parent pom) -->
+    <plugins>
+      <plugin>
+        <groupId>io.micronaut.build</groupId>
+        <artifactId>micronaut-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <artifactId>maven-clean-plugin</artifactId>
+        <version>3.1.0</version>
+      </plugin>
+      <!-- see http://maven.apache.org/ref/current/maven-core/default-bindings.html#Plugin_bindings_for_jar_packaging -->
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>3.0.2</version>
+      </plugin>
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.8.0</version>
+        <configuration>
+          <!-- Uncomment to enable incremental compilation -->
+          <!-- <useIncrementalCompilation>false</useIncrementalCompilation> -->
+
+          <annotationProcessorPaths combine.children="append">
+            <path>
+              <groupId>io.micronaut</groupId>
+              <artifactId>micronaut-http-validation</artifactId>
+              <version>${micronaut.version}</version>
+            </path>
+            <path>
+              <groupId>org.projectlombok</groupId>
+              <artifactId>lombok</artifactId>
+              <version>1.18.24</version>
+            </path>
+          </annotationProcessorPaths>
+          <compilerArgs>
+            <arg>-Amicronaut.processing.group=com.yakovenko</arg>
+            <arg>-Amicronaut.processing.module=lab3</arg>
+          </compilerArgs>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifest>
+              <mainClass>com.yakovenko.lab3.AnalyticsApplication</mainClass>
+            </manifest>
+          </archive>
+          <descriptorRefs>
+            <descriptorRef>jar-with-dependencies</descriptorRef>
+          </descriptorRefs>
+        </configuration>
+        <executions>
+          <execution>
+            <id>make-assembly</id> <!-- this is used for inheritance merges -->
+            <phase>package</phase> <!-- bind to the packaging phase -->
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>3.0.2</version>
+      </plugin>
+      <plugin>
+        <artifactId>maven-install-plugin</artifactId>
+        <version>2.5.2</version>
+      </plugin>
+    </plugins>
+  </build>
+</project>

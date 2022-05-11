@@ -1,0 +1,4 @@
+micronaut:
+  application:
+    name: AnalyticsApplication
+kafka.bootstrap.servers: localhost:9092
