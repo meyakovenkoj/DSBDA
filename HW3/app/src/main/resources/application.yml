@@ -1,4 +1,0 @@
-micronaut:
-  server:
-    netty:
-      logLevel: INFO
